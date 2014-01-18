@@ -1,9 +1,16 @@
 package DistSysLab0;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import org.apache.log4j.Logger;
+import org.yaml.snakeyaml.Yaml;
 
 public class MessagePasser {
     private static MessagePasser instance;
@@ -70,7 +77,20 @@ public class MessagePasser {
      * For test.
      */
     public static void main(String[] args) {
-
+    	try {
+			String filename = "config.yaml";
+	        //Reads the file and builds configure map
+			Yaml yaml = new Yaml();
+			File optionFile = new File(filename);
+			FileReader fr = new FileReader(optionFile);
+            BufferedReader br = new BufferedReader(fr);
+            LinkedHashMap<String, String> list = (LinkedHashMap<String, String>) yaml.load(br);
+            System.out.println(list);
+		    
+		}
+		catch (Exception e) {
+			System.out.println("File Read Error: " + e.getMessage());
+		}  
     }
     
     @Override
