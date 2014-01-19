@@ -2,13 +2,13 @@ package DistSysLab0;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Queue;
-
+import java.security.MessageDigest;
 import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
@@ -48,6 +48,41 @@ public class MessagePasser {
         return instance;
     }
     
+    public static byte[] createChecksum(String filename) throws Exception {
+        InputStream fis =  new FileInputStream(filename);
+
+        byte[] buffer = new byte[1024];
+        MessageDigest complete = MessageDigest.getInstance("MD5");
+        int numRead;
+
+        do {
+            numRead = fis.read(buffer);
+            if (numRead > 0) {
+                complete.update(buffer, 0, numRead);
+            }
+        } while (numRead != -1);
+
+        fis.close();
+        return complete.digest();
+    }
+ 
+   public synchronized static String getMD5Checksum(String filename) {
+        byte[] b;
+		try {
+			b = createChecksum(filename);
+			String result = "";
+
+	        for (int i=0; i < b.length; i++) {
+	            result += Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
+	        }
+	        return result;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return " ";
+		}        
+    }
+    
     /**
      * Return existed instance of MessagePasser
      * @return instance
@@ -77,16 +112,32 @@ public class MessagePasser {
      * For test.
      */
     public static void main(String[] args) {
+    	Yaml yaml;
+    	File optionFile;
+    	FileReader fr;
+    	BufferedReader br;
+    	LinkedHashMap<String, String> configMap = null;
+    	String MD5Last = "";
+    	
     	try {
-			String filename = "config.yaml";
-	        //Reads the file and builds configure map
-			Yaml yaml = new Yaml();
-			File optionFile = new File(filename);
-			FileReader fr = new FileReader(optionFile);
-            BufferedReader br = new BufferedReader(fr);
-            LinkedHashMap<String, String> list = (LinkedHashMap<String, String>) yaml.load(br);
-            System.out.println(list);
-		    
+    		String configuration_filename = "config.yaml";
+    		//before sending and receiving message, 
+    		String MD5 = getMD5Checksum(configuration_filename);
+    		
+	        //check whether config file has been changed
+    		//if changed, re-reads the file and builds configure map
+    		if(!MD5.equals(MD5Last)) { 
+				yaml = new Yaml();
+				optionFile = new File(configuration_filename);
+				fr = new FileReader(optionFile);
+	            br = new BufferedReader(fr);
+	            configMap = (LinkedHashMap<String, String>)yaml.load(br);
+	            MD5Last = MD5;
+    		}
+            
+            //sending and receiving message according to configMap
+    		System.out.println(MD5);
+            System.out.println(configMap);
 		}
 		catch (Exception e) {
 			System.out.println("File Read Error: " + e.getMessage());
