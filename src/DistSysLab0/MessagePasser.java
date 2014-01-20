@@ -11,6 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
+import distSysLab0.RuleBean.RuleAction;
+
 public class MessagePasser {
     private static MessagePasser instance;
     private static Logger logger = Logger.getLogger(MessagePasser.class);
@@ -109,8 +111,7 @@ public class MessagePasser {
     /**
      * Send a message.
      * 
-     * @param message
-     *            The message need to be sent.
+     * @param message The message need to be sent.
      */
     public void send(Message message) {
         String MD5 = getMD5Checksum(configFile);
@@ -121,7 +122,16 @@ public class MessagePasser {
 
         message.setSeqNum(curId.incrementAndGet());
 
-        // Try to match a rule and act corresponding
+        RuleAction action = RuleAction.NONE;
+        for(RuleBean rule : sendRules) {
+            if(rule.isMatch(message)) {
+                action = rule.getAction();
+            }
+        }
+        
+        switch (action) {
+        
+        }
     }
 
     /**
@@ -140,6 +150,7 @@ public class MessagePasser {
         synchronized (recvQueue) {
             while(!recvQueue.isEmpty()) {
                 // Try to match a rule and act corresponding
+                // TODO The match procedure should be in the listener thread
                 receiveList.add(recvQueue.poll());
             }
         }

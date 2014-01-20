@@ -29,8 +29,9 @@ public class Message implements Serializable {
     private int seqNum;
     private String src;
     private String dest;
-    private String kind;
+    private MessageKind kind;
     private Object data;
+    private boolean duplicate;
 
     /**
      * Constructor of message
@@ -39,10 +40,11 @@ public class Message implements Serializable {
      * @param kind
      * @param data
      */
-    public Message(String dest, String kind, Object data) {
+    public Message(String dest, MessageKind kind, Object data) {
         this.dest = dest;
         this.kind = kind;
         this.data = data;
+        this.duplicate = false;
     }
 
     public int getSeqNum() {
@@ -69,11 +71,11 @@ public class Message implements Serializable {
         this.dest = dest;
     }
 
-    public String getKind() {
+    public MessageKind getKind() {
         return kind;
     }
 
-    public void setKind(String kind) {
+    public void setKind(MessageKind kind) {
         this.kind = kind;
     }
 
@@ -83,6 +85,14 @@ public class Message implements Serializable {
 
     public void setData(Object data) {
         this.data = data;
+    }
+    
+    public Boolean getDuplicate() {
+        return duplicate;
+    }
+    
+    public void setDuplicate(boolean duplicate) {
+        this.duplicate = duplicate;
     }
 
     @Override

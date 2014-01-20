@@ -12,7 +12,7 @@ import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
 
 import distSysLab0.Message.MessageKind;
-import distSysLab0.RuleBean.MessageAction;
+import distSysLab0.RuleBean.RuleAction;
 
 public class ConfigParser {
     public static int NUM_NODE;
@@ -63,11 +63,11 @@ public class ConfigParser {
                 for (Map.Entry<String, Object> innerdetails : details.entrySet()) {
                     if (innerdetails.getKey().equalsIgnoreCase("Action")) {
                         if (innerdetails.getValue().toString().equalsIgnoreCase("Drop"))
-                            bean.setAction(MessageAction.DROP);
+                            bean.setAction(RuleAction.DROP);
                         if (innerdetails.getValue().toString().equalsIgnoreCase("Delay"))
-                            bean.setAction(MessageAction.DELAY);
+                            bean.setAction(RuleAction.DELAY);
                         if (innerdetails.getValue().toString().equalsIgnoreCase("Duplicate"))
-                            bean.setAction(MessageAction.DUPLICATE);
+                            bean.setAction(RuleAction.DUPLICATE);
                     }
 
                     if (innerdetails.getKey().equalsIgnoreCase("Src"))
@@ -104,11 +104,11 @@ public class ConfigParser {
                 for (Map.Entry<String, Object> entry : details.entrySet()) {
                     if (entry.getKey().equalsIgnoreCase("Action")) {
                         if (entry.getValue().toString().equalsIgnoreCase("Drop"))
-                            bean.setAction(MessageAction.DROP);
+                            bean.setAction(RuleAction.DROP);
                         if (entry.getValue().toString().equalsIgnoreCase("Delay"))
-                            bean.setAction(MessageAction.DELAY);
+                            bean.setAction(RuleAction.DELAY);
                         if (entry.getValue().toString().equalsIgnoreCase("Duplicate"))
-                            bean.setAction(MessageAction.DUPLICATE);
+                            bean.setAction(RuleAction.DUPLICATE);
                     }
 
                     if (entry.getKey().equalsIgnoreCase("Src"))
