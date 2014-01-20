@@ -1,8 +1,6 @@
 package distSysLab0;
 
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 public class NodeBean implements Serializable {
     /**
@@ -11,17 +9,17 @@ public class NodeBean implements Serializable {
     private static final long serialVersionUID = 7327605186398795909L;
     private String name;
     private String ip;
-    private InetAddress inetAddr;
+    //private InetAddress inetAddr;
     private int port;
 
     public NodeBean() {
 
     }
 
-    public NodeBean(String name, String ip, int port) throws UnknownHostException {
+    public NodeBean(String name, String ip, int port) {
         this.name = name;
         this.ip = ip;
-        this.inetAddr = InetAddress.getByName(ip);
+        //this.inetAddr = InetAddress.getByName(ip);
         this.port = port;
     }
 
@@ -37,9 +35,9 @@ public class NodeBean implements Serializable {
         return ip;
     }
 
-    public void setIp(String ip) throws UnknownHostException {
+    public void setIp(String ip) {
         this.ip = ip;
-        this.inetAddr = InetAddress.getByName(ip);
+        //this.inetAddr = InetAddress.getByName(ip);
     }
 
     public int getPort() {

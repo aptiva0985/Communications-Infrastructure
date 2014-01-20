@@ -7,8 +7,26 @@ import org.apache.log4j.Logger;
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
     static Logger logger = Logger.getLogger(Message.class);
+    
+    public enum MessageKind {
+        ACK {
+            public String toString() {
+                return "ack";
+            }
+        },
+        LOOKUP {
+            public String toString() {
+                return "lookup";
+            }
+        },
+        DEFAULT {
+            public String toString() {
+                return "default";
+            }
+        };
+    }
 
-    private int id;
+    private int seqNum;
     private String src;
     private String dest;
     private String kind;
@@ -27,12 +45,12 @@ public class Message implements Serializable {
         this.data = data;
     }
 
-    public int getId() {
-        return id;
+    public int getSeqNum() {
+        return seqNum;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setSeqNum(int seqNum) {
+        this.seqNum = seqNum;
     }
 
     public String getSrc() {
@@ -69,6 +87,7 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return this.src + " to " + this.dest + ". Kind: " + this.kind + " with " + this.data;
+        return "Seq: " + this.seqNum + ", " + this.src + " to " + this.dest +
+               ". Kind: " + this.kind + " with " + this.data;
     }
 }

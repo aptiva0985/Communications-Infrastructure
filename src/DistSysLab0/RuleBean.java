@@ -1,12 +1,23 @@
 package distSysLab0;
 
+import org.apache.log4j.Logger;
+
+import distSysLab0.Message.MessageKind;
+
 public class RuleBean {
+    static Logger logger = Logger.getLogger(RuleBean.class);
+
+    public enum MessageAction {
+        DROP, DUPLICATE, DELAY, NONE;
+    }
+
     private MessageAction action;
     private String src;
     private String dest;
     private MessageKind kind;
-
-    // seqnum and duplicate?
+    private int id = -1;
+    private int Nth = -1;
+    private int everyNth = -1;
 
     public RuleBean() {
 
@@ -48,9 +59,35 @@ public class RuleBean {
     public void setKind(MessageKind kind) {
         this.kind = kind;
     }
-    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getNth() {
+        return Nth;
+    }
+
+    public void setNth(int nth) {
+        Nth = nth;
+    }
+
+    public int getEveryNth() {
+        return everyNth;
+    }
+
+    public void setEveryNth(int everyNth) {
+        this.everyNth = everyNth;
+    }
+
     @Override
     public String toString() {
-            return dest + " " + action;
+        return "[action=" + action + ", src=" + src + ", dest=" + dest + 
+               ", kind=" + kind + ", id=" + id + ", Nth=" + Nth + ", everyNth="
+               + everyNth + "]";
     }
 }

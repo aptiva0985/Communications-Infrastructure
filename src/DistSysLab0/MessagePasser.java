@@ -6,8 +6,8 @@ import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
@@ -16,8 +16,8 @@ public class MessagePasser {
     private static Logger logger = Logger.getLogger(MessagePasser.class);
     private ConfigParser configParser;
 
-    private Queue<Message> sendQueue = new LinkedList<Message>();
-    private Queue<Message> recvQueue = new LinkedList<Message>();
+    private LinkedBlockingDeque<Message> sendQueue = new LinkedBlockingDeque<Message>();
+    private LinkedBlockingDeque<Message> recvQueue = new LinkedBlockingDeque<Message>();
     private HashMap<String, NodeBean> nodeList = new HashMap<String, NodeBean>();
     private ArrayList<RuleBean> sendRules = new ArrayList<RuleBean>();
     private ArrayList<RuleBean> recvRules = new ArrayList<RuleBean>();
@@ -26,6 +26,7 @@ public class MessagePasser {
     private String localName;
     private int port;
     private String MD5Last;
+    private AtomicInteger curId;
 
     /**
      * Actual constructor for MessagePasser
@@ -104,40 +105,45 @@ public class MessagePasser {
         }
         return result;
     }
-    
+
     /**
      * Send a message.
-     * @param message The message need to be sent.
+     * 
+     * @param message
+     *            The message need to be sent.
      */
     public void send(Message message) {
         String MD5 = getMD5Checksum(configFile);
         if(!MD5.equals(MD5Last)) {
             configParser.readSendRules();
             MD5Last = MD5;
-            
-            
         }
+
+        message.setSeqNum(curId.incrementAndGet());
+
+        // Try to match a rule and act corresponding
     }
 
     /**
-     * Peek a message from receive queue.
+     * Peek message list from receive queue.
      * 
-     * @return A message.
+     * @return A message list.
      */
-    public synchronized Message receive() {
+    public ArrayList<Message> receive() {
         String MD5 = getMD5Checksum(configFile);
         if(!MD5.equals(MD5Last)) {
             configParser.readRecvRules();
             MD5Last = MD5;
-            
-            
+
         }
-        Message msg = recvQueue.peek();
-        if(msg != null) {
-            recvQueue.remove();
-            return msg;
+        ArrayList<Message> receiveList = new ArrayList<Message>();
+        synchronized (recvQueue) {
+            while(!recvQueue.isEmpty()) {
+                // Try to match a rule and act corresponding
+                receiveList.add(recvQueue.poll());
+            }
         }
-        return null;
+        return receiveList;
     }
 
     /**

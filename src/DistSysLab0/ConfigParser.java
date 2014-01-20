@@ -11,6 +11,9 @@ import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
+import distSysLab0.Message.MessageKind;
+import distSysLab0.RuleBean.MessageAction;
+
 public class ConfigParser {
     public static int NUM_NODE;
     private String configurationFile;
