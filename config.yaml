@@ -19,6 +19,9 @@ configuration:
     - name: daphnie
       ip: 192.168.1.87
       port: 1987
+    - name: jing
+      ip: 192.168.111.1
+      port: 2014
 
 sendRules:
     - action: drop # Ack message number 4 from bob to alice will not be sent
