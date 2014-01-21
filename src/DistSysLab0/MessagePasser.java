@@ -11,11 +11,8 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.log4j.Logger;
 
-import distSysLab0.Message.MessageKind;
 import distSysLab0.RuleBean.RuleAction;
 
 public class MessagePasser {
@@ -196,8 +193,9 @@ public class MessagePasser {
 			MessagePasser messagePasser = MessagePasser.getInstance("config.yaml", "jing");
 			messagePasser.startReceiver();
 			Message m = new Message("jing", Message.MessageKind.ACK, "NNNNNNN------NNNNNNN");
-			messagePasser.send(m);		
-			System.out.println("come here!");
+			messagePasser.send(m);
+			//System.out.println("Send");
+				
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

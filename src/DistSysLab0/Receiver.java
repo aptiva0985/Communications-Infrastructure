@@ -17,19 +17,17 @@ public class Receiver implements Runnable {
 		byte [] receiveBuf = new byte[2014];
 		try {
 			ServerSocket servSock=new ServerSocket(this.servPort);
-			while(true){
+			while(true) {
 				Socket clntSock=servSock.accept();
+				Message message = null;
 				SocketAddress clientAddress=clntSock.getRemoteSocketAddress();
 				System.out.println("Handling client at "+clientAddress);
-				InputStream in=clntSock.getInputStream();
-				while((recvMsgSize=in.read(receiveBuf))!=-1){
-					for(byte b : receiveBuf) {
-						char c = (char)b;
-						System.out.println(c);	
-					}
+				ObjectInputStream in = new ObjectInputStream(
+						new BufferedInputStream(clntSock.getInputStream()));
+				if((message = (Message)(in.readObject())) != null){
+					
 					//out.write(receiveBuf, 0, recvMsgSize);
-					System.out.println(recvMsgSize);
-								
+					System.out.println((String)message.getData());								
 				}
 				clntSock.close();
 			}
