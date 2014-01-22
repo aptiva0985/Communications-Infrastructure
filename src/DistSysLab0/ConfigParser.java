@@ -11,7 +11,6 @@ import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
-import distSysLab0.Message.MessageKind;
 import distSysLab0.RuleBean.RuleAction;
 
 public class ConfigParser {
@@ -76,12 +75,7 @@ public class ConfigParser {
                     if (innerdetails.getKey().equalsIgnoreCase("Dest"))
                         bean.setDest(innerdetails.getValue().toString());
                     if (innerdetails.getKey().equalsIgnoreCase("Kind")) {
-                        if (innerdetails.getValue().toString().equalsIgnoreCase("Lookup"))
-                            bean.setKind(MessageKind.LOOKUP);
-                        if (innerdetails.getValue().toString().equalsIgnoreCase("Ack"))
-                            bean.setKind(MessageKind.ACK);
-                        if (innerdetails.getValue().toString().equalsIgnoreCase("None"))
-                            bean.setKind(MessageKind.DEFAULT);
+                        bean.setKind(innerdetails.getValue().toString());
                     }
                     if (innerdetails.getKey().equalsIgnoreCase("seqNum"))
                     	bean.setSeqNum((int)innerdetails.getValue());

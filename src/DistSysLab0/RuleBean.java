@@ -2,8 +2,6 @@ package distSysLab0;
 
 import org.apache.log4j.Logger;
 
-import distSysLab0.Message.MessageKind;
-
 public class RuleBean {
     static Logger logger = Logger.getLogger(RuleBean.class);
 
@@ -14,7 +12,7 @@ public class RuleBean {
     private RuleAction action;
     private String src;
     private String dest;
-    private MessageKind kind;
+    private String kind;
     private Boolean duplicate = null;
     private int seqNum = -1;
 
@@ -51,11 +49,11 @@ public class RuleBean {
         this.dest = dest;
     }
 
-    public MessageKind getKind() {
+    public String getKind() {
         return kind;
     }
 
-    public void setKind(MessageKind kind) {
+    public void setKind(String kind) {
         this.kind = kind;
     }
     

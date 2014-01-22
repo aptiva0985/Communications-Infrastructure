@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
 
-import distSysLab0.Message.MessageKind;
-
 public class UserInputThread implements Runnable {
     private static Logger logger = Logger.getLogger(UserInputThread.class);
 
@@ -33,7 +31,7 @@ public class UserInputThread implements Runnable {
                     System.out.println("Message data:");
                     String data = in.readLine();
 
-                    Message msg = new Message(dest, MessageKind.valueOf(kind), data);
+                    Message msg = new Message(dest, kind, data);
                     msgPasser.send(msg);
                 }
                 else if(command.equals("receive")) {

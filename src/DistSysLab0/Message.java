@@ -7,29 +7,11 @@ import org.apache.log4j.Logger;
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
     static Logger logger = Logger.getLogger(Message.class);
-    
-    public enum MessageKind {
-        ACK {
-            public String toString() {
-                return "ack";
-            }
-        },
-        LOOKUP {
-            public String toString() {
-                return "lookup";
-            }
-        },
-        DEFAULT {
-            public String toString() {
-                return "default";
-            }
-        };
-    }
 
     private int seqNum;
     private String src;
     private String dest;
-    private MessageKind kind;
+    private String kind;
     private Object data;
     private boolean duplicate;
 
@@ -40,7 +22,7 @@ public class Message implements Serializable {
      * @param kind
      * @param data
      */
-    public Message(String dest, MessageKind kind, Object data) {
+    public Message(String dest, String kind, Object data) {
         this.dest = dest;
         this.kind = kind;
         this.data = data;
@@ -71,11 +53,11 @@ public class Message implements Serializable {
         this.dest = dest;
     }
 
-    public MessageKind getKind() {
+    public String getKind() {
         return kind;
     }
 
-    public void setKind(MessageKind kind) {
+    public void setKind(String kind) {
         this.kind = kind;
     }
 
