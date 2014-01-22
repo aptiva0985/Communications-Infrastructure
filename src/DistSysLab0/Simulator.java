@@ -1,5 +1,6 @@
 package distSysLab0;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 public class Simulator {
@@ -7,11 +8,11 @@ public class Simulator {
 	/**
 	 * For test.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		try {
 			MessagePasser messagePasser = MessagePasser.getInstance("config.yaml", "jing");
 			if(false)
-				messagePasser.startReceiver();
+				messagePasser.startListener();
 			else{
 				messagePasser.startSender();
 				
@@ -25,13 +26,15 @@ public class Simulator {
 				messagePasser.send(m3);
 				messagePasser.send(m4);
 				messagePasser.send(m5);
+				
+		        messagePasser.teminate();
 			}
 			
 				
 		} catch (UnknownHostException e) { 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}		
 	}
 
 }
