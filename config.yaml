@@ -20,15 +20,22 @@ configuration:
       ip: 192.168.1.87
       port: 1987
     - name: jing
-      ip: 192.168.111.1
+      ip: 192.168.1.101
       port: 2014
 
 sendRules:
     - action: drop # Ack message number 4 from bob to alice will not be sent
-      src: bob
-      dest: alice
+      dest: jing
       kind: Ack
-      seqNum: 4
+      seqNum: 2
+    - action: delay # Ack message number 4 from bob to alice will not be sent
+      dest: jing
+      kind: Ack
+      seqNum: 3
+    - action: duplicate # Ack message number 4 from bob to alice will not be sent
+      dest: jing
+      kind: Ack
+      seqNum: 1
     - action: delay # Every Lookup message in the system will be delayed
       kind: Lookup
 
