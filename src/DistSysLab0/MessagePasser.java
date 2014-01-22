@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingDeque;
+
 import org.apache.log4j.Logger;
 
 import distSysLab0.RuleBean.RuleAction;
@@ -21,6 +22,7 @@ public class MessagePasser {
 	private ConfigParser configParser;
 
 	private LinkedBlockingDeque<Message> sendQueue = new LinkedBlockingDeque<Message>();
+	private LinkedBlockingDeque<Message> delayQueue = new LinkedBlockingDeque<Message>();
 	private LinkedBlockingDeque<Message> recvQueue = new LinkedBlockingDeque<Message>();
 	private HashMap<String, NodeBean> nodeList = new HashMap<String, NodeBean>();
 	private ArrayList<RuleBean> sendRules = new ArrayList<RuleBean>();
@@ -33,6 +35,7 @@ public class MessagePasser {
 	private int curId;
 	
 	private Receiver receiver;
+	private Sender sender;
 
 	/**
 	 * Actual constructor for MessagePasser
@@ -55,12 +58,18 @@ public class MessagePasser {
 		
 		int servPort = nodeList.get(localName).getPort();
 		receiver = new Receiver(servPort);
+		sender = new Sender(sendQueue, delayQueue, nodeList);;
 
 		logger.debug(this.toString());
 	}
 	
 	public synchronized void startReceiver() {
 		Thread thread = new Thread(this.receiver); 
+		thread.start();
+	}
+	
+	public synchronized void startSender() {
+		Thread thread = new Thread(this.sender); 
 		thread.start();
 	}
 
@@ -129,40 +138,42 @@ public class MessagePasser {
 	 *            The message need to be sent.
 	 */
 	public void send(Message message) {
+		message.setSeqNum(curId++);
 		String MD5 = getMD5Checksum(configFile);
 		if (!MD5.equals(MD5Last)) {
 			sendRules = configParser.readSendRules();
 			recvRules = configParser.readRecvRules();
 			MD5Last = MD5;
 		}
-
-		message.setSeqNum(curId++);
-
+		
 		RuleAction action = RuleAction.NONE;
 		for (RuleBean rule : sendRules) {
 			if (rule.isMatch(message)) {
 				action = rule.getAction();
 			}
-		}
+		}	
 
 		switch (action) {
-		default:
-			String serverName = message.getDest();
-			String servIp = nodeList.get(serverName).getIp();
-			int servPort = nodeList.get(serverName).getPort();
-			Socket socket;
-			try {
-				socket = new Socket(servIp, servPort);
-				ObjectOutputStream objectOutputStream = new ObjectOutputStream(
-														new BufferedOutputStream(socket.getOutputStream()));
-				objectOutputStream.writeObject(message);
-				objectOutputStream.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
+			case DROP:
+				//drop this message means donot add it into sendQueue or delayQueue
+			break;
+				
+			case DUPLICATE:
+				message.setDuplicate(true);
+				// add this message into sendQueue
+				sendQueue.add(message);
+				sendQueue.add(message);
+			break;
+				
+			case DELAY:
+				// add this message into delayQueue
+				delayQueue.add(message);
+			break;
+			
+			default:			
+				// add this message into sendQueue
+				sendQueue.add(message);
+		} 	
 	}
 
 	/**
