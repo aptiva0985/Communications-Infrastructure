@@ -4,30 +4,26 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 public class Simulator {
-
+	static public UserInputThread uiThread;
+	
+	public static void startUIThread() {
+		uiThread = new UserInputThread();
+        Thread thread = new Thread(uiThread); 
+        thread.start();
+    }
 	/**
 	 * For test.
 	 */
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException {
 		try {
 			MessagePasser messagePasser = MessagePasser.getInstance("config.yaml", "jing");
 			if(false)
 				messagePasser.startListener();
-			else{
-				messagePasser.startSender();
-				
-				Message m1 = new Message("jing", "ACK", "Hello from Jacky1");
-				Message m2 = new Message("jing", "ACK", "Hello from Jacky2");
-				Message m3 = new Message("jing", "ACK", "Hello from Jacky3");
-				Message m4 = new Message("jing", "ACK", "Hello from Jacky4");
-				Message m5 = new Message("jing", "ACK", "Hello from Jacky5");
-				messagePasser.send(m1);
-				messagePasser.send(m2);
-				messagePasser.send(m3);
-				messagePasser.send(m4);
-				messagePasser.send(m5);
-				
-		        messagePasser.teminate();
+			else{				
+				messagePasser.startSender();		
+				startUIThread();
+		        //messagePasser.teminate();
 			}
 			
 				

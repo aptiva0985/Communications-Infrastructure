@@ -58,7 +58,7 @@ public class MessagePasser {
         }
         else {
             listener = new ListenerThread(nodeList.get(localName).getPort(), recvQueue);
-            sender = new SenderThread(sendQueue, delayQueue, nodeList);;
+            sender = new SenderThread(sendQueue, delayQueue, nodeList);
         }
 
         logger.debug(this.toString());
@@ -86,8 +86,7 @@ public class MessagePasser {
      * @param configuration_filename
      * @param local_name
      */
-    public static synchronized MessagePasser getInstance(
-                                                         String configuration_filename, String local_name)
+    public static synchronized MessagePasser getInstance(String configuration_filename, String local_name)
                                                                  throws UnknownHostException {
         if (instance == null) {
             instance = new MessagePasser(configuration_filename, local_name);

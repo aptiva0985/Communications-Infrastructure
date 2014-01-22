@@ -12,12 +12,13 @@ public class UserInputThread implements Runnable {
     @Override
     public void run() {
         MessagePasser msgPasser = MessagePasser.getInstance();
+        
         try {
+        	System.out.println("Enter command: (send/receive/status/exit)");
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-            String command = in.readLine();
+            String command = "";
             while(!command.equals("quit")) {
-                System.out.println("Enter command: (send/receive/status/exit)");
-                
+            	command = in.readLine();
                 if(command.equals("send")) {
                     System.out.println("Message dest:");
                     String dest = in.readLine();
@@ -55,6 +56,8 @@ public class UserInputThread implements Runnable {
                 else {
                     System.out.println("Invalid command");
                 }
+                
+                System.out.println("Enter command: (send/receive/status/exit)");
             }
             
             msgPasser.teminate();

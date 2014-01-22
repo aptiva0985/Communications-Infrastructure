@@ -29,7 +29,6 @@ public class ReceiverThread implements Runnable {
                 if((message = (Message) (in.readObject())) != null) {
                     // Try to match a rule and act corresponding
                     // TODO The match procedure should be in the listener thread
-                    // out.write(receiveBuf, 0, recvMsgSize);
                     System.out.println((String) message.getData());
                     logger.info((String) message.getData());
 
