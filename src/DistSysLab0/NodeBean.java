@@ -3,10 +3,7 @@ package distSysLab0;
 import java.io.Serializable;
 
 public class NodeBean implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 7327605186398795909L;
+    private static final long serialVersionUID = 1L;
     private String name;
     private String ip;
     //private InetAddress inetAddr;
@@ -19,7 +16,6 @@ public class NodeBean implements Serializable {
     public NodeBean(String name, String ip, int port) {
         this.name = name;
         this.ip = ip;
-        //this.inetAddr = InetAddress.getByName(ip);
         this.port = port;
     }
 
@@ -37,7 +33,6 @@ public class NodeBean implements Serializable {
 
     public void setIp(String ip) {
         this.ip = ip;
-        //this.inetAddr = InetAddress.getByName(ip);
     }
 
     public int getPort() {

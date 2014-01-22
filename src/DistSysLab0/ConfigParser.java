@@ -11,7 +11,6 @@ import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
-import distSysLab0.Message.MessageKind;
 import distSysLab0.RuleBean.RuleAction;
 
 public class ConfigParser {
@@ -57,6 +56,7 @@ public class ConfigParser {
 
         for(Map.Entry<String, ArrayList<Map<String, Object>>> entrys : obj.entrySet()) {
             Iterator<Map<String, Object>> i = entrys.getValue().iterator();
+            if(!entrys.getKey().equals("sendRules")) continue;
             while (i.hasNext()) {
                 Map<String, Object> details = (Map<String, Object>) i.next();
                 RuleBean bean = new RuleBean();
@@ -75,13 +75,10 @@ public class ConfigParser {
                     if (innerdetails.getKey().equalsIgnoreCase("Dest"))
                         bean.setDest(innerdetails.getValue().toString());
                     if (innerdetails.getKey().equalsIgnoreCase("Kind")) {
-                        if (innerdetails.getValue().toString().equalsIgnoreCase("Lookup"))
-                            bean.setKind(MessageKind.LOOKUP);
-                        if (innerdetails.getValue().toString().equalsIgnoreCase("Ack"))
-                            bean.setKind(MessageKind.ACK);
-                        if (innerdetails.getValue().toString().equalsIgnoreCase("None"))
-                            bean.setKind(MessageKind.DEFAULT);
+                        bean.setKind(innerdetails.getValue().toString());
                     }
+                    if (innerdetails.getKey().equalsIgnoreCase("seqNum"))
+                    	bean.setSeqNum((int)innerdetails.getValue());
                 }
                 sendRules.add(bean);
             }
@@ -98,6 +95,7 @@ public class ConfigParser {
 
         for(Map.Entry<String, ArrayList<Map<String, Object>>> entrys : obj.entrySet()) {
             Iterator<Map<String, Object>> i = entrys.getValue().iterator();
+            if(!entrys.getKey().equals("receiveRules")) continue;
             while (i.hasNext()) {
                 Map<String, Object> details = (Map<String, Object>) i.next();
                 RuleBean bean = new RuleBean();
@@ -113,6 +111,8 @@ public class ConfigParser {
 
                     if (entry.getKey().equalsIgnoreCase("Src"))
                         bean.setSrc(entry.getValue().toString());
+                    if (entry.getKey().equalsIgnoreCase("seqNum"))
+                    	bean.setSeqNum((int)entry.getValue());
                 }
                 recvRules.add(bean);
             }
