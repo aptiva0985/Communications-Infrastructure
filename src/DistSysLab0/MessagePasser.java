@@ -49,6 +49,8 @@ public class MessagePasser {
 
 		configParser = new ConfigParser(configFile);
 		nodeList = configParser.readConfig();
+		sendRules = configParser.readSendRules();
+		recvRules = configParser.readRecvRules();
 		MD5Last = getMD5Checksum(configFile);
 		
 		int servPort = nodeList.get(localName).getPort();
@@ -129,7 +131,8 @@ public class MessagePasser {
 	public void send(Message message) {
 		String MD5 = getMD5Checksum(configFile);
 		if (!MD5.equals(MD5Last)) {
-			configParser.readSendRules();
+			sendRules = configParser.readSendRules();
+			recvRules = configParser.readRecvRules();
 			MD5Last = MD5;
 		}
 
@@ -163,43 +166,26 @@ public class MessagePasser {
 	}
 
 	/**
-	 * Peek message list from receive queue.
+	 * deliver a single message from the front of this input queue
 	 * 
-	 * @return A message list.
+	 * @return A piece of message
 	 */
-	public ArrayList<Message> receive() {
+	public Message receive() {
 		String MD5 = getMD5Checksum(configFile);
 		if (!MD5.equals(MD5Last)) {
-			configParser.readRecvRules();
+			sendRules = configParser.readSendRules();
+			recvRules = configParser.readRecvRules();
 			MD5Last = MD5;
-
 		}
-		ArrayList<Message> receiveList = new ArrayList<Message>();
+		Message message = null;
 		synchronized (recvQueue) {
-			while (!recvQueue.isEmpty()) {
+			if (!recvQueue.isEmpty()) {
 				// Try to match a rule and act corresponding
 				// TODO The match procedure should be in the listener thread
-				receiveList.add(recvQueue.poll());
+				message = recvQueue.poll();
 			}
 		}
-		return receiveList;
-	}
-
-	/**
-	 * For test.
-	 */
-	public static void main(String[] args) {
-		try {
-			MessagePasser messagePasser = MessagePasser.getInstance("config.yaml", "jing");
-			messagePasser.startReceiver();
-			Message m = new Message("jing", Message.MessageKind.ACK, "NNNNNNN------NNNNNNN");
-			messagePasser.send(m);
-			//System.out.println("Send");
-				
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return message;
 	}
 
 	@Override
