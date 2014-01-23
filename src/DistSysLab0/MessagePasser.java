@@ -1,11 +1,7 @@
 package distSysLab0;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.UnknownHostException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -17,11 +13,11 @@ import distSysLab0.RuleBean.RuleAction;
 public class MessagePasser {
     private static MessagePasser instance;
     private static Logger logger = Logger.getLogger(MessagePasser.class);
-    private ConfigParser configParser;
 
     private LinkedBlockingDeque<Message> sendQueue = new LinkedBlockingDeque<Message>();
-    private LinkedBlockingDeque<Message> delayQueue = new LinkedBlockingDeque<Message>();
+    private LinkedBlockingDeque<Message> sendDelayQueue = new LinkedBlockingDeque<Message>();
     private LinkedBlockingDeque<Message> recvQueue = new LinkedBlockingDeque<Message>();
+    private LinkedBlockingDeque<Message> recvDelayQueue = new LinkedBlockingDeque<Message>();
     private HashMap<String, NodeBean> nodeList = new HashMap<String, NodeBean>();
     private ArrayList<RuleBean> sendRules = new ArrayList<RuleBean>();
     private ArrayList<RuleBean> recvRules = new ArrayList<RuleBean>();
@@ -46,19 +42,20 @@ public class MessagePasser {
         this.configFile = configFile;
         this.curSeqNum = 0;
 
-        configParser = new ConfigParser(configFile);
-        nodeList = configParser.readConfig();
-        sendRules = configParser.readSendRules();
-        recvRules = configParser.readRecvRules();
-        MD5Last = getMD5Checksum(configFile);
+        ConfigParser.configurationFile = configFile;
+        nodeList = ConfigParser.readConfig();
+        sendRules = ConfigParser.readSendRules();
+        recvRules = ConfigParser.readRecvRules();
+        MD5Last = ConfigParser.getMD5Checksum(configFile);
 
         if(nodeList.get(localName) == null) {
             logger.error("The local name is incorrect.");
             System.exit(0);
         }
         else {
-            listener = new ListenerThread(nodeList.get(localName).getPort(), recvQueue);
-            sender = new SenderThread(sendQueue, delayQueue, nodeList);
+            listener = new ListenerThread(nodeList.get(localName).getPort(), configFile,
+            								recvRules, sendRules, recvQueue, recvDelayQueue);
+            sender = new SenderThread(sendQueue, sendDelayQueue, nodeList);
         }
 
         logger.debug(this.toString());
@@ -104,54 +101,6 @@ public class MessagePasser {
     }
 
     /**
-     * Generate checksum array of a input file.
-     */
-    public static byte[] createChecksum(String filename) {
-        InputStream fis;
-        MessageDigest complete = null;
-
-        try {
-            fis = new FileInputStream(filename);
-
-            byte[] buffer = new byte[1024];
-            complete = MessageDigest.getInstance("MD5");
-            int numRead;
-
-            do {
-                numRead = fis.read(buffer);
-                if (numRead > 0) {
-                    complete.update(buffer, 0, numRead);
-                }
-            } while (numRead != -1);
-
-            fis.close();
-        }
-        catch (IOException | NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return complete.digest();
-    }
-
-    /**
-     * Generate MD5 value of a input file.
-     * @param filename The input file.
-     * @return The MD5 value of input file.
-     */
-    public synchronized static String getMD5Checksum(String filename) {
-        byte[] b;
-        String result = "";
-        b = createChecksum(filename);
-
-        for (int i = 0; i < b.length; i++) {
-            result += Integer.toString((b[i] & 0xff) + 0x100, 16)
-                    .substring(1);
-        }
-
-        return result;
-    }
-
-    /**
      * Send a message.
      * 
      * @param message The message need to be sent.
@@ -162,10 +111,10 @@ public class MessagePasser {
         message.setSeqNum(curSeqNum++);
 
         // Check if the configuration file has been changed.
-        String MD5 = getMD5Checksum(configFile);
+        String MD5 = ConfigParser.getMD5Checksum(configFile);
         if (!MD5.equals(MD5Last)) {
-            sendRules = configParser.readSendRules();
-            recvRules = configParser.readRecvRules();
+            sendRules = ConfigParser.readSendRules();
+            recvRules = ConfigParser.readRecvRules();
             MD5Last = MD5;
         }
 
@@ -177,7 +126,7 @@ public class MessagePasser {
             }
         }	
 
-        // Do action according the matched rule's type.
+        // Do action according to the matched rule's type.
         switch (action) {
         case DROP:
             // Just drop this message.
@@ -193,37 +142,29 @@ public class MessagePasser {
 
         case DELAY:
             // Add this message into delayQueue
-            delayQueue.add(message);
+        	sendDelayQueue.add(message);
             break;
 
         case NONE:
+        default:
             // Add this message into sendQueue
             sendQueue.add(message);
         } 	
     }
 
     /**
-     * Deliver message from the input queue
+     * Deliver message from the receive queue
      * 
      * @return A message
      */
     public Message receive() {
-        // Check if the configuration file has been changed.
-        String MD5 = getMD5Checksum(configFile);
-        if (!MD5.equals(MD5Last)) {
-            sendRules = configParser.readSendRules();
-            recvRules = configParser.readRecvRules();
-            MD5Last = MD5;
-        }
-
-        ArrayList<Message> messages = new ArrayList<Message>();
+        Message message = null;
         synchronized (recvQueue) {
             if (!recvQueue.isEmpty()) {
-
-                messages.add(recvQueue.poll());
+                message = recvQueue.poll();
             }
-        }
-        return messages.remove(0);
+        }       
+        return message;
     }
 
     /**

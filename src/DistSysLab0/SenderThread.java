@@ -30,8 +30,9 @@ public class SenderThread implements Runnable {
 	        // if there is one non-delay message, put all delay message into
 	        // sendQueue
 	        if(!sendQueue.isEmpty()) {
-	            while(!delayQueue.isEmpty()) {
-	                sendQueue.add(delayQueue.pollFirst());
+	            if(!delayQueue.isEmpty()) {
+	                sendQueue.addAll(delayQueue);
+	                delayQueue.clear();
 	            }
 	        }
 	        while(!sendQueue.isEmpty()) {

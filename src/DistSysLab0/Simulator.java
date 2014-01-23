@@ -14,21 +14,16 @@ public class Simulator {
 	/**
 	 * For test.
 	 */
-	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException {
 		try {
-			MessagePasser messagePasser = MessagePasser.getInstance("config.yaml", "jing");
-			if(false)
-				messagePasser.startListener();
-			else{				
-				messagePasser.startSender();		
-				startUIThread();
-		        //messagePasser.teminate();
-			}
-			
+			MessagePasser messagePasser = MessagePasser.getInstance("config.yaml", "jing");	
+			messagePasser.startListener();
+			messagePasser.startSender();		
+			startUIThread();
+	        //messagePasser.teminate();			
 				
 		} catch (UnknownHostException e) { 
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}		
 	}

@@ -2,8 +2,13 @@ package distSysLab0;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,16 +20,12 @@ import distSysLab0.RuleBean.RuleAction;
 
 public class ConfigParser {
     public static int NUM_NODE;
-    private String configurationFile;
-
-    public ConfigParser(String configurationFile) {
-        this.configurationFile = configurationFile;
-    }
+    public static String configurationFile;
 
     /**
      * Read configuration part in config file.
      */
-    public HashMap<String, NodeBean> readConfig() throws UnknownHostException {
+    public static HashMap<String, NodeBean> readConfig() throws UnknownHostException {
         HashMap<String, NodeBean> nodeList = new HashMap<String, NodeBean>();
         Map<String, ArrayList<Map<String, Object>>> obj = init();
 
@@ -50,7 +51,7 @@ public class ConfigParser {
     /**
      * Read send rule part in config file.
      */
-    public ArrayList<RuleBean> readSendRules() {
+    public static ArrayList<RuleBean> readSendRules() {
         ArrayList<RuleBean> sendRules = new ArrayList<RuleBean>();
         Map<String, ArrayList<Map<String, Object>>> obj = init();
 
@@ -89,7 +90,7 @@ public class ConfigParser {
     /**
      * Read receive rule part in config file.
      */
-    public ArrayList<RuleBean> readRecvRules() {
+    public static ArrayList<RuleBean> readRecvRules() {
         ArrayList<RuleBean> recvRules = new ArrayList<RuleBean>();
         Map<String, ArrayList<Map<String, Object>>> obj = init();
 
@@ -121,7 +122,7 @@ public class ConfigParser {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, ArrayList<Map<String, Object>>> init() {
+    private static Map<String, ArrayList<Map<String, Object>>> init() {
         Map<String, ArrayList<Map<String, Object>>> raw = null;
         try {
             // Reads the file and builds configure map
@@ -135,5 +136,53 @@ public class ConfigParser {
             System.out.println("File Read Error: " + e.getMessage());
         }
         return raw;
+    }
+    
+    /**
+     * Generate checksum array of a input file.
+     */
+    private static byte[] createChecksum(String filename) {
+        InputStream fis;
+        MessageDigest complete = null;
+
+        try {
+            fis = new FileInputStream(filename);
+
+            byte[] buffer = new byte[1024];
+            complete = MessageDigest.getInstance("MD5");
+            int numRead;
+
+            do {
+                numRead = fis.read(buffer);
+                if (numRead > 0) {
+                    complete.update(buffer, 0, numRead);
+                }
+            } while (numRead != -1);
+
+            fis.close();
+        }
+        catch (IOException | NoSuchAlgorithmException e) {
+            // Auto-generated catch block
+            e.printStackTrace();
+        }
+        return complete.digest();
+    }
+
+    /**
+     * Generate MD5 value of a input file.
+     * @param filename The input file.
+     * @return The MD5 value of input file.
+     */
+    public synchronized static String getMD5Checksum(String filename) {
+        byte[] b;
+        String result = "";
+        b = createChecksum(filename);
+
+        for (int i = 0; i < b.length; i++) {
+            result += Integer.toString((b[i] & 0xff) + 0x100, 16)
+                    .substring(1);
+        }
+
+        return result;
     }
 }
