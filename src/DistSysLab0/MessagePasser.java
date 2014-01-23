@@ -1,6 +1,7 @@
 package distSysLab0;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class MessagePasser {
         this.localName = localName;
         this.configFile = configFile;
         this.curSeqNum = 0;
-
+        
         ConfigParser.configurationFile = configFile;
         nodeList = ConfigParser.readConfig();
         sendRules = ConfigParser.readSendRules();
@@ -50,6 +51,10 @@ public class MessagePasser {
 
         if(nodeList.get(localName) == null) {
             logger.error("The local name is incorrect.");
+            System.exit(0);
+        }
+        else if (!InetAddress.getLocalHost().getHostAddress().toString().equals(nodeList.get(localName).getIp())) {
+            logger.error("Local ip do not match configuration file.");
             System.exit(0);
         }
         else {
@@ -136,8 +141,11 @@ public class MessagePasser {
             // Add this message into sendQueue.
             sendQueue.add(message);
             // Add a duplicate message into sendQueue.
-            message.setDuplicate(true);
-            sendQueue.add(message);
+            Message copy = message.copyOf();
+            copy.setDuplicate(true);
+            sendQueue.add(copy);
+            sendQueue.addAll(sendDelayQueue);
+            sendDelayQueue.clear();
             break;
 
         case DELAY:
@@ -149,6 +157,8 @@ public class MessagePasser {
         default:
             // Add this message into sendQueue
             sendQueue.add(message);
+            sendQueue.addAll(sendDelayQueue);
+            sendDelayQueue.clear();
         } 	
     }
 
@@ -163,7 +173,10 @@ public class MessagePasser {
             if (!recvQueue.isEmpty()) {
                 message = recvQueue.poll();
             }
-        }       
+        }
+        if(message != null) {
+            System.out.println(message.getSrc()+message.getDest()+message.getSeqNum()+message.getKind()+message.getDuplicate());
+        }
         return message;
     }
 
@@ -173,7 +186,7 @@ public class MessagePasser {
     public void teminate() throws IOException {
         listener.teminate();
 
-        //sender.teminate();
+        sender.teminate();
     }
 
     public HashMap<String, NodeBean> getNodeList() {

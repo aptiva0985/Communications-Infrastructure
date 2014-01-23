@@ -49,7 +49,7 @@ public class UserInputThread implements Runnable {
                     System.out.println(msgPasser.toString());
                 }
                 else if(command.equals("exit")) {
-                    msgPasser.teminate();
+                    //msgPasser.teminate();
                     System.out.println("Exit.");
                     System.exit(0);
                 }

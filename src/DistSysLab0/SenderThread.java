@@ -3,6 +3,7 @@ package distSysLab0;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -13,46 +14,46 @@ public class SenderThread implements Runnable {
     private static Logger logger = Logger.getLogger(SenderThread.class);
 
     private LinkedBlockingDeque<Message> sendQueue;
-    private LinkedBlockingDeque<Message> delayQueue;
     private HashMap<String, NodeBean> nodeList;
+    private Socket socket;
 
     public SenderThread(LinkedBlockingDeque<Message> sendQueue, LinkedBlockingDeque<Message> delayQueue, HashMap<String, NodeBean> nodeList) {
         this.sendQueue = sendQueue;
-        this.delayQueue = delayQueue;
         this.nodeList = nodeList;
     }
 
-    @SuppressWarnings("resource")
 	@Override
     public void run() {
 
     	while(true) {
-	        // if there is one non-delay message, put all delay message into
-	        // sendQueue
-	        if(!sendQueue.isEmpty()) {
-	            if(!delayQueue.isEmpty()) {
-	                sendQueue.addAll(delayQueue);
-	                delayQueue.clear();
-	            }
-	        }
+	        // if there is one non-delay message, put all delay message into sendQueue
 	        while(!sendQueue.isEmpty()) {
-	            // TODO send all message in sendQueue
+	            // Send all message in sendQueue
 	            Message message = sendQueue.pollFirst();
 	            String serverName = message.getDest();
 	            String servIp = nodeList.get(serverName).getIp();
 	            int servPort = nodeList.get(serverName).getPort();
 	            try {
-	                Socket socket = new Socket(servIp, servPort);
+	                socket = new Socket(servIp, servPort);
 	                ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 	                objectOutputStream.writeObject(message);
+	                System.out.println(message.getSrc()+message.getDest()+message.getSeqNum()+message.getKind()+message.getDuplicate());
 	                objectOutputStream.flush();
 	                //objectOutputStream.close();
 	            }
-	            catch (IOException e) {
-	                logger.error("ERROR: Socket error");
-	                e.printStackTrace();
-	            }
+	            catch (ConnectException e) {
+                    logger.error("ERROR: Message send failure, node offline " + message.toString());
+                    System.out.println("ERROR: Message send failure, node offline " + message.toString());
+                }
+                catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 	        }
     	}
+    }
+
+    public void teminate() throws IOException {
+        socket.close();
     }
 }

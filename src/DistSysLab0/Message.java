@@ -76,10 +76,19 @@ public class Message implements Serializable {
     public void setDuplicate(boolean duplicate) {
         this.duplicate = duplicate;
     }
+    
+    public Message copyOf() {
+        Message to = new Message(this.dest, this.kind, this.data);
+        to.duplicate = this.duplicate;
+        to.seqNum = this.seqNum;
+        to.src = this.src;
+        
+        return to;
+    }
 
     @Override
     public String toString() {
         return "Seq: " + this.seqNum + ", " + this.src + " to " + this.dest +
-               ". Kind: " + this.kind + " with " + this.data;
+               ". Kind: " + this.kind + "Duplicate: " + this.duplicate + " with " + this.data;
     }
 }

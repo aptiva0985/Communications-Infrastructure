@@ -16,7 +16,7 @@ public class Simulator {
 	 */
 	public static void main(String[] args) throws IOException {
 		try {
-			MessagePasser messagePasser = MessagePasser.getInstance("config.yaml", "jing");	
+			MessagePasser messagePasser = MessagePasser.getInstance("config.yaml", "bbb");	
 			messagePasser.startListener();
 			messagePasser.startSender();		
 			startUIThread();

@@ -69,15 +69,14 @@ public class ReceiverThread implements Runnable {
                         switch (action) {
 	                        case DROP:
 	                            // Just drop this message.
-	                        	recvQueue.addAll(recvDelayQueue);
-	                        	recvDelayQueue.clear();
 	                            break;
 	                        case DUPLICATE:
 	                            // Add this message into recvQueue.
 	                        	recvQueue.add(message);
 	                            // Add a duplicate message into recvQueue.
-	                            message.setDuplicate(true);
-	                            recvQueue.add(message);
+	                        	Message copy = message.copyOf();
+	                        	copy.setDuplicate(true);
+	                            recvQueue.add(copy);
 	                            recvQueue.addAll(recvDelayQueue);
 	                            recvDelayQueue.clear();
 	                            break;

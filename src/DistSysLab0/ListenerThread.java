@@ -17,6 +17,7 @@ public class ListenerThread implements Runnable {
     private LinkedBlockingDeque<Message> recvQueue;
     private LinkedBlockingDeque<Message> recvDelayQueue;
     private ServerSocket listenSocket;
+    private Thread thread;
 
     public ListenerThread(int port, String configFile,
     						ArrayList<RuleBean> recvRules, ArrayList<RuleBean> sendRules, 
@@ -39,7 +40,7 @@ public class ListenerThread implements Runnable {
                 logger.info("Handling client at " + socket.getRemoteSocketAddress());
                 // System.out.println("Handling client at " + socket.getRemoteSocketAddress());
                 // Create a new thread for new incoming connection.
-                Thread thread = new Thread(new ReceiverThread(socket, configFile, recvRules, sendRules, recvQueue, recvDelayQueue));
+                thread = new Thread(new ReceiverThread(socket, configFile, recvRules, sendRules, recvQueue, recvDelayQueue));
                 thread.start();
             }
         }
@@ -50,6 +51,7 @@ public class ListenerThread implements Runnable {
     }
 
     public void teminate() throws IOException {
+        thread.interrupt();
         listenSocket.close();
     }
     

@@ -71,15 +71,18 @@ public class ConfigParser {
                             bean.setAction(RuleAction.DUPLICATE);
                     }
 
-                    if (innerdetails.getKey().equalsIgnoreCase("Src"))
+                    if (innerdetails.getKey().equalsIgnoreCase("Src")) {
                         bean.setSrc(innerdetails.getValue().toString());
-                    if (innerdetails.getKey().equalsIgnoreCase("Dest"))
+                    }
+                    if (innerdetails.getKey().equalsIgnoreCase("Dest")) {
                         bean.setDest(innerdetails.getValue().toString());
+                    }
                     if (innerdetails.getKey().equalsIgnoreCase("Kind")) {
                         bean.setKind(innerdetails.getValue().toString());
                     }
-                    if (innerdetails.getKey().equalsIgnoreCase("seqNum"))
+                    if (innerdetails.getKey().equalsIgnoreCase("seqNum")) {
                     	bean.setSeqNum((int)innerdetails.getValue());
+                    }
                 }
                 sendRules.add(bean);
             }
@@ -110,10 +113,18 @@ public class ConfigParser {
                             bean.setAction(RuleAction.DUPLICATE);
                     }
 
-                    if (entry.getKey().equalsIgnoreCase("Src"))
+                    if (entry.getKey().equalsIgnoreCase("Src")) {
                         bean.setSrc(entry.getValue().toString());
-                    if (entry.getKey().equalsIgnoreCase("seqNum"))
-                    	bean.setSeqNum((int)entry.getValue());
+                    }
+                    if (entry.getKey().equalsIgnoreCase("Dest")) {
+                        bean.setDest(entry.getValue().toString());
+                    }
+                    if (entry.getKey().equalsIgnoreCase("Kind")) {
+                        bean.setKind(entry.getValue().toString());
+                    }
+                    if (entry.getKey().equalsIgnoreCase("seqNum")) {
+                        bean.setSeqNum((int)entry.getValue());
+                    }
                 }
                 recvRules.add(bean);
             }
