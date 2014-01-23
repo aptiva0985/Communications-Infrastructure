@@ -44,7 +44,8 @@ public class SenderThread implements Runnable {
 	                Socket socket = new Socket(servIp, servPort);
 	                ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 	                objectOutputStream.writeObject(message);
-	                objectOutputStream.close();
+	                objectOutputStream.flush();
+	                //objectOutputStream.close();
 	            }
 	            catch (IOException e) {
 	                logger.error("ERROR: Socket error");

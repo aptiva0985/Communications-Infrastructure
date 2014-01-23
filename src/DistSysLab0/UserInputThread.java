@@ -27,7 +27,7 @@ public class UserInputThread implements Runnable {
                         dest = in.readLine();
                     }
 
-                    System.out.println("Message kind (ack/lookup/deafult):");
+                    System.out.println("Message kind (any string):");
                     String kind = in.readLine();
                     System.out.println("Message data:");
                     String data = in.readLine();

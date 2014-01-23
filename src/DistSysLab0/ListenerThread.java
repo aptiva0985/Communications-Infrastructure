@@ -41,4 +41,9 @@ public class ListenerThread implements Runnable {
     public void teminate() throws IOException {
         listenSocket.close();
     }
+    
+    @Override
+    public String toString() {
+        return "Listener [port=" + port + "]";
+    }
 }
