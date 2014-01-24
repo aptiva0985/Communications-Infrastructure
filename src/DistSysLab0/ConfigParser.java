@@ -81,7 +81,7 @@ public class ConfigParser {
                         bean.setKind(innerdetails.getValue().toString());
                     }
                     if (innerdetails.getKey().equalsIgnoreCase("seqNum")) {
-                    	bean.setSeqNum((int)innerdetails.getValue());
+                        bean.setSeqNum((int)innerdetails.getValue());
                     }
                 }
                 sendRules.add(bean);
@@ -148,7 +148,7 @@ public class ConfigParser {
         }
         return raw;
     }
-    
+
     /**
      * Generate checksum array of a input file.
      */

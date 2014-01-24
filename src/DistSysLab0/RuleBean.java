@@ -56,7 +56,7 @@ public class RuleBean {
     public void setKind(String kind) {
         this.kind = kind;
     }
-    
+
     public Boolean getDuplicate() {
         return duplicate;
     }
@@ -85,7 +85,7 @@ public class RuleBean {
                 }
             }
         }
-        
+
         return false;
     }
 

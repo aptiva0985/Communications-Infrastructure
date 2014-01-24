@@ -24,9 +24,9 @@ public class ReceiverThread implements Runnable {
     private String MD5Last;
 
     public ReceiverThread(Socket socket, String configFile,
-    						ArrayList<RuleBean> recvRules, ArrayList<RuleBean> sendRules,     						
-    						LinkedBlockingDeque<Message> recvQueue, 
-    						LinkedBlockingDeque<Message> recvDelayQueue) {
+                            ArrayList<RuleBean> recvRules, ArrayList<RuleBean> sendRules,
+                            LinkedBlockingDeque<Message> recvQueue,
+                            LinkedBlockingDeque<Message> recvDelayQueue) {
         this.socket = socket;
         this.recvQueue = recvQueue;
         this.in = null;
@@ -48,7 +48,7 @@ public class ReceiverThread implements Runnable {
                     recvRules = ConfigParser.readRecvRules();
                     MD5Last = MD5;
                 }
-                
+
                 in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
                 if((message = (Message) (in.readObject())) != null) {
                     // Try to match a rule and act corresponding
@@ -60,34 +60,34 @@ public class ReceiverThread implements Runnable {
                             action = rule.getAction();
                         }
                     }
-                    
+
                     synchronized(recvQueue) {
-                    	// Do action according to the matched rule's type.
-                    	// if one non-delay message comes(even with drop kind?), 
+                        // Do action according to the matched rule's type.
+                        // if one non-delay message comes(even with drop kind?),
                         // then all messages in delay queue go to normal queue
                         switch (action) {
-	                        case DROP:
-	                            // Just drop this message.
-	                            break;
-	                        case DUPLICATE:
-	                            // Add this message into recvQueue.
-	                        	recvQueue.add(message);
-	                            // Add a duplicate message into recvQueue.
-	                        	Message copy = message.copyOf();
-	                        	copy.setDuplicate(true);
-	                            recvQueue.add(copy);
-	                            recvQueue.addAll(recvDelayQueue);
-	                            recvDelayQueue.clear();
-	                            break;
-	                        case DELAY:
-	                            // Add this message into delayQueue
-	                        	recvDelayQueue.add(message);
-	                            break;                           
-	                        case NONE:
-	                        default:
-	                        	recvQueue.add(message);
-	                        	recvQueue.addAll(recvDelayQueue);
-	                        	recvDelayQueue.clear();
+                            case DROP:
+                                // Just drop this message.
+                                break;
+                            case DUPLICATE:
+                                // Add this message into recvQueue.
+                                recvQueue.add(message);
+                                // Add a duplicate message into recvQueue.
+                                Message copy = message.copyOf();
+                                copy.setDuplicate(true);
+                                recvQueue.add(copy);
+                                recvQueue.addAll(recvDelayQueue);
+                                recvDelayQueue.clear();
+                                break;
+                            case DELAY:
+                                // Add this message into delayQueue
+                                recvDelayQueue.add(message);
+                                break;
+                            case NONE:
+                            default:
+                                recvQueue.add(message);
+                                recvQueue.addAll(recvDelayQueue);
+                                recvDelayQueue.clear();
                         }
                     }
                 }

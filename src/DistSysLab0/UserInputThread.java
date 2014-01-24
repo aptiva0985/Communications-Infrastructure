@@ -12,13 +12,13 @@ public class UserInputThread implements Runnable {
     @Override
     public void run() {
         MessagePasser msgPasser = MessagePasser.getInstance();
-        
+
         try {
-        	System.out.println("Enter command: (send/receive/status/exit)");
+            System.out.println("Enter command: (send/receive/status/exit)");
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             String command = "";
             while(!command.equals("quit")) {
-            	command = in.readLine();
+                command = in.readLine();
                 if(command.equals("send")) {
                     System.out.println("Message dest:");
                     String dest = in.readLine();
@@ -56,10 +56,10 @@ public class UserInputThread implements Runnable {
                 else {
                     System.out.println("Invalid command");
                 }
-                
+
                 System.out.println("Enter command: (send/receive/status/exit)");
             }
-            
+
             msgPasser.teminate();
             System.out.println("Exit.");
             System.exit(0);
@@ -70,17 +70,17 @@ public class UserInputThread implements Runnable {
             e.printStackTrace();
         }
     }
-    
+
     public static String[] init() throws IOException {
         String[] result = new String[2];
-        
+
         System.out.println("Enter the name of configuration file:");
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         result[0] = in.readLine();
-        
+
         System.out.println("Enter the name of your machine:");
         result[1] = in.readLine();
-        
+
         return result;
     }
 }

@@ -20,9 +20,9 @@ public class ListenerThread implements Runnable {
     private Thread thread;
 
     public ListenerThread(int port, String configFile,
-    						ArrayList<RuleBean> recvRules, ArrayList<RuleBean> sendRules, 
-    						LinkedBlockingDeque<Message> recvQueue, 
-    						LinkedBlockingDeque<Message> recvDelayQueue) {
+                            ArrayList<RuleBean> recvRules, ArrayList<RuleBean> sendRules,
+                            LinkedBlockingDeque<Message> recvQueue,
+                            LinkedBlockingDeque<Message> recvDelayQueue) {
         this.port = port;
         this.recvQueue = recvQueue;
         this.recvDelayQueue = recvDelayQueue;
@@ -55,7 +55,7 @@ public class ListenerThread implements Runnable {
         thread.interrupt();
         listenSocket.close();
     }
-    
+
     @Override
     public String toString() {
         return "Listener [port=" + port + "]";
