@@ -70,4 +70,17 @@ public class UserInputThread implements Runnable {
             e.printStackTrace();
         }
     }
+    
+    public static String[] init() throws IOException {
+        String[] result = new String[2];
+        
+        System.out.println("Enter the name of configuration file:");
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        result[0] = in.readLine();
+        
+        System.out.println("Enter the name of your machine:");
+        result[1] = in.readLine();
+        
+        return result;
+    }
 }

@@ -91,6 +91,7 @@ public class RuleBean {
 
     @Override
     public String toString() {
-        return "[action=" + action + ", src=" + src + ", dest=" + dest + ", kind=" + kind + ", SeqNum=" + seqNum + "]";
+        return "[action=" + action + ", src=" + src + ", dest=" + dest +
+               ", kind=" + kind + ", SeqNum=" + seqNum + "]";
     }
 }

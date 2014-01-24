@@ -53,7 +53,6 @@ public class ReceiverThread implements Runnable {
                 if((message = (Message) (in.readObject())) != null) {
                     // Try to match a rule and act corresponding
                     // The match procedure should be in the listener thread
-                    // System.out.println((String) message.getData()); //just for debug
                     logger.info((String) message.getData());
                     RuleAction action = RuleAction.NONE;
                     for (RuleBean rule : recvRules) {

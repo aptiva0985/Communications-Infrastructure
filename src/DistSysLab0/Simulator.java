@@ -5,25 +5,26 @@ import java.net.UnknownHostException;
 
 public class Simulator {
 	static public UserInputThread uiThread;
+	private static String[] arg;
 	
-	public static void startUIThread() {
+	public static void startUIThread() throws IOException {
 		uiThread = new UserInputThread();
         Thread thread = new Thread(uiThread); 
         thread.start();
     }
+	
 	/**
-	 * For test.
+	 * Test entrance.
 	 */
 	public static void main(String[] args) throws IOException {
 		try {
-			MessagePasser messagePasser = MessagePasser.getInstance("config.yaml", "jing");	
+	        arg = UserInputThread.init();
+			MessagePasser messagePasser = MessagePasser.getInstance(arg[0], arg[1]);	
 			messagePasser.startListener();
 			messagePasser.startSender();		
-			startUIThread();
-	        //messagePasser.teminate();			
-				
+			startUIThread();        
+
 		} catch (UnknownHostException e) { 
-			// Auto-generated catch block
 			e.printStackTrace();
 		}		
 	}

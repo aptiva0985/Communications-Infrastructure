@@ -24,7 +24,6 @@ public class SenderThread implements Runnable {
 
 	@Override
     public void run() {
-
     	while(true) {
 	        // if there is one non-delay message, put all delay message into sendQueue
 	        while(!sendQueue.isEmpty()) {
@@ -37,16 +36,20 @@ public class SenderThread implements Runnable {
 	                socket = new Socket(servIp, servPort);
 	                ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 	                objectOutputStream.writeObject(message);
-	                System.out.println(message.getSrc()+message.getDest()+message.getSeqNum()+message.getKind()+message.getDuplicate());
+	                
+	                System.out.println("Send Success:");
+	                System.out.println("From:" + message.getSrc() + " to:" +
+	                                   message.getDest() + " Seq:" + message.getSeqNum() +
+	                                   " Kind:" + message.getKind() + " Dup:" +
+	                                   message.getDuplicate() + " data:" + message.getData());
+	                
 	                objectOutputStream.flush();
-	                //objectOutputStream.close();
 	            }
 	            catch (ConnectException e) {
                     logger.error("ERROR: Message send failure, node offline " + message.toString());
                     System.out.println("ERROR: Message send failure, node offline " + message.toString());
                 }
                 catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 	        }
