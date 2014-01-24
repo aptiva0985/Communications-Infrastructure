@@ -19,8 +19,11 @@ configuration:
     - name: daphnie
       ip: 192.168.1.87
       port: 1987
+    - name: aaa
+      ip: 128.237.214.17
+      port: 11111
     - name: jing
-      ip: 192.168.1.101
+      ip: 172.31.52.31
       port: 2014
 
 sendRules:
