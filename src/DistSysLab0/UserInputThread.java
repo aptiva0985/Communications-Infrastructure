@@ -34,6 +34,9 @@ public class UserInputThread implements Runnable {
 
                     Message msg = new Message(dest, kind, data);
                     msgPasser.send(msg);
+                    
+                    System.out.println("Send Success:");
+                    System.out.println(msg.toString());
                 }
                 else if(command.equals("receive")) {
                     Message msg = msgPasser.receive();

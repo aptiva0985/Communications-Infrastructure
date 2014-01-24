@@ -174,15 +174,6 @@ public class MessagePasser {
                 message = recvQueue.poll();
             }
         }
-
-        if(message != null) {
-            System.out.println("Receive Success:");
-            System.out.println("From:" + message.getSrc() + " to:" +
-                               message.getDest() + " Seq:" + message.getSeqNum() +
-                               " Kind:" + message.getKind() + " Dup:" +
-                               message.getDuplicate() + " data:" + message.getData());
-        }
-
         return message;
     }
 

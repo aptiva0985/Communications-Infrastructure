@@ -125,6 +125,14 @@ public class ConfigParser {
                     if (entry.getKey().equalsIgnoreCase("seqNum")) {
                         bean.setSeqNum((int)entry.getValue());
                     }
+                    if (entry.getKey().equalsIgnoreCase("Duplicate")) {
+                        if((entry.getValue()).toString().equalsIgnoreCase("True")) {
+                            bean.setDuplicate(true);
+                        }
+                        else if((entry.getValue()).toString().equalsIgnoreCase("False")) {
+                            bean.setDuplicate(false);
+                        }
+                    }
                 }
                 recvRules.add(bean);
             }

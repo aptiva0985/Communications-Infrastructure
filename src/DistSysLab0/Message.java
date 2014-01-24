@@ -88,7 +88,8 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return "Seq: " + this.seqNum + ", " + this.src + " to " + this.dest +
-               ". Kind: " + this.kind + "Duplicate: " + this.duplicate + " with " + this.data;
+        return "From:" + this.getSrc() + " to:" + this.getDest() +
+               " Seq:" + this.getSeqNum() + " Kind:" + this.getKind()
+               + " Dup:" + this.getDuplicate() + " Data:" + this.getData();
     }
 }

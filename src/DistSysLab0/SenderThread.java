@@ -37,12 +37,6 @@ public class SenderThread implements Runnable {
                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
                     objectOutputStream.writeObject(message);
 
-                    System.out.println("Send Success:");
-                    System.out.println("From:" + message.getSrc() + " to:" +
-                                       message.getDest() + " Seq:" + message.getSeqNum() +
-                                       " Kind:" + message.getKind() + " Dup:" +
-                                       message.getDuplicate() + " data:" + message.getData());
-
                     objectOutputStream.flush();
                 }
                 catch (ConnectException e) {
