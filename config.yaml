@@ -7,7 +7,7 @@
 # The local node¡¯s name is included in this list
 configuration:
     - name: alice
-      ip: 192.168.1.52
+      ip: 192.168.1.101
       port: 12344 # This is the incoming port on which MP will listen
                   # May be changed for further communication as usual
     - name: bob
@@ -26,7 +26,7 @@ configuration:
       ip: 128.237.191.106
       port: 22222
     - name: jing1
-      ip: 172.31.52.253
+      ip: 172.31.52.72
       port: 2013
     - name: jing2
       ip: 172.31.52.253
