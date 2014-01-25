@@ -19,18 +19,24 @@ configuration:
     - name: daphnie
       ip: 192.168.1.87
       port: 1987
-    - name: aaa
-      ip: 128.237.214.17
+    - name: P1
+      ip: 128.237.191.106
       port: 11111
-    - name: jing
-      ip: 172.31.52.31
+    - name: P2
+      ip: 128.237.191.106
+      port: 22222
+    - name: jing1
+      ip: 172.31.52.253
+      port: 2013
+    - name: jing2
+      ip: 172.31.52.253
       port: 2014
 
 sendRules:
-    - action: drop # Ack message number 4 from bob to alice will not be sent
-      dest: jing
-      kind: Ack
-      seqNum: 2
+    - action: duplicate # Ack message number 4 from bob to alice will not be sent
+      dest: P1
+    - action: duplicate # Ack message number 4 from bob to alice will not be sent
+      dest: P2
     - action: delay # Ack message number 4 from bob to alice will not be sent
       dest: jing
       kind: Ack
@@ -46,3 +52,6 @@ receiveRules:
     - action: duplicate # 3rd message from Charlie that anyone
       src: charlie # receives will be duplicated
       seqNum: 3
+    - action: delay
+      src: P1 # receives will be duplicated
+    
