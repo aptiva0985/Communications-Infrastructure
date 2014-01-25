@@ -33,7 +33,7 @@ public class MessagePasser {
 
     /**
      * Actual constructor for MessagePasser
-     * 
+     *
      * @param configFile
      * @param localName
      */
@@ -42,7 +42,7 @@ public class MessagePasser {
         this.localName = localName;
         this.configFile = configFile;
         this.curSeqNum = 0;
-        
+
         ConfigParser.configurationFile = configFile;
         nodeList = ConfigParser.readConfig();
         sendRules = ConfigParser.readSendRules();
@@ -59,7 +59,7 @@ public class MessagePasser {
         }
         else {
             listener = new ListenerThread(nodeList.get(localName).getPort(), configFile,
-            								recvRules, sendRules, recvQueue, recvDelayQueue);
+                                            recvRules, sendRules, recvQueue, recvDelayQueue);
             sender = new SenderThread(sendQueue, sendDelayQueue, nodeList);
         }
 
@@ -70,7 +70,7 @@ public class MessagePasser {
      * Initialization for receive thread.
      */
     public synchronized void startListener() {
-        Thread thread = new Thread(this.listener); 
+        Thread thread = new Thread(this.listener);
         thread.start();
     }
 
@@ -78,13 +78,13 @@ public class MessagePasser {
      * Initialization for send thread.
      */
     public synchronized void startSender() {
-        Thread thread = new Thread(this.sender); 
+        Thread thread = new Thread(this.sender);
         thread.start();
     }
 
     /**
      * Singleton constructor for MessagePasser
-     * 
+     *
      * @param configuration_filename
      * @param local_name
      */
@@ -98,7 +98,7 @@ public class MessagePasser {
 
     /**
      * Return existed instance of MessagePasser
-     * 
+     *
      * @return instance
      */
     public static MessagePasser getInstance() {
@@ -107,7 +107,7 @@ public class MessagePasser {
 
     /**
      * Send a message.
-     * 
+     *
      * @param message The message need to be sent.
      */
     public void send(Message message) {
@@ -129,7 +129,7 @@ public class MessagePasser {
             if (rule.isMatch(message)) {
                 action = rule.getAction();
             }
-        }	
+        }
 
         // Do action according to the matched rule's type.
         switch (action) {
@@ -150,7 +150,7 @@ public class MessagePasser {
 
         case DELAY:
             // Add this message into delayQueue
-        	sendDelayQueue.add(message);
+            sendDelayQueue.add(message);
             break;
 
         case NONE:
@@ -159,12 +159,12 @@ public class MessagePasser {
             sendQueue.add(message);
             sendQueue.addAll(sendDelayQueue);
             sendDelayQueue.clear();
-        } 	
+        }
     }
 
     /**
      * Deliver message from the receive queue
-     * 
+     *
      * @return A message
      */
     public Message receive() {
@@ -173,9 +173,6 @@ public class MessagePasser {
             if (!recvQueue.isEmpty()) {
                 message = recvQueue.poll();
             }
-        }
-        if(message != null) {
-            System.out.println(message.getSrc()+message.getDest()+message.getSeqNum()+message.getKind()+message.getDuplicate());
         }
         return message;
     }

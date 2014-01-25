@@ -22,35 +22,32 @@ public class SenderThread implements Runnable {
         this.nodeList = nodeList;
     }
 
-	@Override
+    @Override
     public void run() {
+        while(true) {
+            // if there is one non-delay message, put all delay message into sendQueue
+            while(!sendQueue.isEmpty()) {
+                // Send all message in sendQueue
+                Message message = sendQueue.pollFirst();
+                String serverName = message.getDest();
+                String servIp = nodeList.get(serverName).getIp();
+                int servPort = nodeList.get(serverName).getPort();
+                try {
+                    socket = new Socket(servIp, servPort);
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                    objectOutputStream.writeObject(message);
 
-    	while(true) {
-	        // if there is one non-delay message, put all delay message into sendQueue
-	        while(!sendQueue.isEmpty()) {
-	            // Send all message in sendQueue
-	            Message message = sendQueue.pollFirst();
-	            String serverName = message.getDest();
-	            String servIp = nodeList.get(serverName).getIp();
-	            int servPort = nodeList.get(serverName).getPort();
-	            try {
-	                socket = new Socket(servIp, servPort);
-	                ObjectOutputStream objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-	                objectOutputStream.writeObject(message);
-	                System.out.println(message.getSrc()+message.getDest()+message.getSeqNum()+message.getKind()+message.getDuplicate());
-	                objectOutputStream.flush();
-	                //objectOutputStream.close();
-	            }
-	            catch (ConnectException e) {
+                    objectOutputStream.flush();
+                }
+                catch (ConnectException e) {
                     logger.error("ERROR: Message send failure, node offline " + message.toString());
                     System.out.println("ERROR: Message send failure, node offline " + message.toString());
                 }
                 catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-	        }
-    	}
+            }
+        }
     }
 
     public void teminate() throws IOException {

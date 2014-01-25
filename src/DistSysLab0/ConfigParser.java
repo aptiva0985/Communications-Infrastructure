@@ -81,7 +81,7 @@ public class ConfigParser {
                         bean.setKind(innerdetails.getValue().toString());
                     }
                     if (innerdetails.getKey().equalsIgnoreCase("seqNum")) {
-                    	bean.setSeqNum((int)innerdetails.getValue());
+                        bean.setSeqNum((int)innerdetails.getValue());
                     }
                 }
                 sendRules.add(bean);
@@ -125,6 +125,14 @@ public class ConfigParser {
                     if (entry.getKey().equalsIgnoreCase("seqNum")) {
                         bean.setSeqNum((int)entry.getValue());
                     }
+                    if (entry.getKey().equalsIgnoreCase("Duplicate")) {
+                        if((entry.getValue()).toString().equalsIgnoreCase("True")) {
+                            bean.setDuplicate(true);
+                        }
+                        else if((entry.getValue()).toString().equalsIgnoreCase("False")) {
+                            bean.setDuplicate(false);
+                        }
+                    }
                 }
                 recvRules.add(bean);
             }
@@ -148,7 +156,7 @@ public class ConfigParser {
         }
         return raw;
     }
-    
+
     /**
      * Generate checksum array of a input file.
      */

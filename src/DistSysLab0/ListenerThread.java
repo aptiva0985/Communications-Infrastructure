@@ -20,9 +20,9 @@ public class ListenerThread implements Runnable {
     private Thread thread;
 
     public ListenerThread(int port, String configFile,
-    						ArrayList<RuleBean> recvRules, ArrayList<RuleBean> sendRules, 
-    						LinkedBlockingDeque<Message> recvQueue, 
-    						LinkedBlockingDeque<Message> recvDelayQueue) {
+                            ArrayList<RuleBean> recvRules, ArrayList<RuleBean> sendRules,
+                            LinkedBlockingDeque<Message> recvQueue,
+                            LinkedBlockingDeque<Message> recvDelayQueue) {
         this.port = port;
         this.recvQueue = recvQueue;
         this.recvDelayQueue = recvDelayQueue;
@@ -36,9 +36,10 @@ public class ListenerThread implements Runnable {
         try {
             listenSocket = new ServerSocket(this.port);
             while(true) {
+                // Listening for new incoming connection.
                 Socket socket = listenSocket.accept();
                 logger.info("Handling client at " + socket.getRemoteSocketAddress());
-                // System.out.println("Handling client at " + socket.getRemoteSocketAddress());
+
                 // Create a new thread for new incoming connection.
                 thread = new Thread(new ReceiverThread(socket, configFile, recvRules, sendRules, recvQueue, recvDelayQueue));
                 thread.start();
@@ -54,7 +55,7 @@ public class ListenerThread implements Runnable {
         thread.interrupt();
         listenSocket.close();
     }
-    
+
     @Override
     public String toString() {
         return "Listener [port=" + port + "]";

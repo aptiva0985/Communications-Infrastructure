@@ -56,7 +56,7 @@ public class RuleBean {
     public void setKind(String kind) {
         this.kind = kind;
     }
-    
+
     public Boolean getDuplicate() {
         return duplicate;
     }
@@ -85,12 +85,13 @@ public class RuleBean {
                 }
             }
         }
-        
+
         return false;
     }
 
     @Override
     public String toString() {
-        return "[action=" + action + ", src=" + src + ", dest=" + dest + ", kind=" + kind + ", SeqNum=" + seqNum + "]";
+        return "[action=" + action + ", src=" + src + ", dest=" + dest +
+               ", kind=" + kind + ", SeqNum=" + seqNum + "]";
     }
 }
